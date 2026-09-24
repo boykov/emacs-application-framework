@@ -30,72 +30,15 @@ from PyQt6.QtWidgets import QApplication, QGraphicsScene
 
 QT_KEY_DICT = {}
 
-QT_KEY_DICT["а"] = 1072
-QT_KEY_DICT["б"] = 1073
-QT_KEY_DICT["в"] = 1074
-QT_KEY_DICT["г"] = 1075
-QT_KEY_DICT["д"] = 1076
-QT_KEY_DICT["е"] = 1077
-QT_KEY_DICT["ё"] = 1105
-QT_KEY_DICT["ж"] = 1078
-QT_KEY_DICT["з"] = 1079
-QT_KEY_DICT["и"] = 1080
-QT_KEY_DICT["й"] = 1081
-QT_KEY_DICT["к"] = 1082
-QT_KEY_DICT["л"] = 1083
-QT_KEY_DICT["м"] = 1084
-QT_KEY_DICT["н"] = 1085
-QT_KEY_DICT["о"] = 1086
-QT_KEY_DICT["п"] = 1087
-QT_KEY_DICT["р"] = 1088
-QT_KEY_DICT["с"] = 1089
-QT_KEY_DICT["т"] = 1090
-QT_KEY_DICT["у"] = 1091
-QT_KEY_DICT["ф"] = 1092
-QT_KEY_DICT["х"] = 1093
-QT_KEY_DICT["ц"] = 1094
-QT_KEY_DICT["ч"] = 1095
-QT_KEY_DICT["ш"] = 1096
-QT_KEY_DICT["щ"] = 1097
-QT_KEY_DICT["ъ"] = 1098
-QT_KEY_DICT["ы"] = 1099
-QT_KEY_DICT["ь"] = 1100
-QT_KEY_DICT["э"] = 1101
-QT_KEY_DICT["ю"] = 1102
-QT_KEY_DICT["я"] = 1103
-QT_KEY_DICT["А"] = 1040
-QT_KEY_DICT["Б"] = 1041
-QT_KEY_DICT["В"] = 1042
-QT_KEY_DICT["Г"] = 1043
-QT_KEY_DICT["Д"] = 1044
-QT_KEY_DICT["Е"] = 1045
-QT_KEY_DICT["Ё"] = 1025
-QT_KEY_DICT["Ж"] = 1046
-QT_KEY_DICT["З"] = 1047
-QT_KEY_DICT["И"] = 1048
-QT_KEY_DICT["Й"] = 1049
-QT_KEY_DICT["К"] = 1050
-QT_KEY_DICT["Л"] = 1051
-QT_KEY_DICT["М"] = 1052
-QT_KEY_DICT["Н"] = 1053
-QT_KEY_DICT["О"] = 1054
-QT_KEY_DICT["П"] = 1055
-QT_KEY_DICT["Р"] = 1056
-QT_KEY_DICT["С"] = 1057
-QT_KEY_DICT["Т"] = 1058
-QT_KEY_DICT["У"] = 1059
-QT_KEY_DICT["Ф"] = 1060
-QT_KEY_DICT["Х"] = 1061
-QT_KEY_DICT["Ц"] = 1062
-QT_KEY_DICT["Ч"] = 1063
-QT_KEY_DICT["Ш"] = 1064
-QT_KEY_DICT["Щ"] = 1065
-QT_KEY_DICT["Ъ"] = 1066
-QT_KEY_DICT["Ы"] = 1067
-QT_KEY_DICT["Ь"] = 1068
-QT_KEY_DICT["Э"] = 1069
-QT_KEY_DICT["Ю"] = 1070
-QT_KEY_DICT["Я"] = 1071
+QT_KEY_DICT = {
+    "а": 1072, "б": 1073, "в": 1074, "г": 1075, "д": 1076, "е": 1077, "ё": 1105, "ж": 1078, "з": 1079, "и": 1080,
+    "й": 1081, "к": 1082, "л": 1083, "м": 1084, "н": 1085, "о": 1086, "п": 1087, "р": 1088, "с": 1089, "т": 1090,
+    "у": 1091, "ф": 1092, "х": 1093, "ц": 1094, "ч": 1095, "ш": 1096, "щ": 1097, "ъ": 1098, "ы": 1099, "ь": 1100,
+    "э": 1101, "ю": 1102, "я": 1103, "А": 1040, "Б": 1041, "В": 1042, "Г": 1043, "Д": 1044, "Е": 1045, "Ё": 1025,
+    "Ж": 1046, "З": 1047, "И": 1048, "Й": 1049, "К": 1050, "Л": 1051, "М": 1052, "Н": 1053, "О": 1054, "П": 1055,
+    "Р": 1056, "С": 1057, "Т": 1058, "У": 1059, "Ф": 1060, "Х": 1061, "Ц": 1062, "Ч": 1063, "Ш": 1064, "Щ": 1065,
+    "Ъ": 1066, "Ы": 1067, "Ь": 1068, "Э": 1069, "Ю": 1070, "Я": 1071
+}
 
 # Build char event.
 for char in string.ascii_lowercase:
@@ -184,6 +127,13 @@ QT_MODIFIER_DICT = {
     "M": Qt.KeyboardModifier.AltModifier,
     "S": Qt.KeyboardModifier.ShiftModifier,
     "s": Qt.KeyboardModifier.MetaModifier
+}
+
+QT_PRESSRELEASE_DICT = {
+    "C": Qt.Key.Key_Control,
+    "M": Qt.Key.Key_Alt,
+    "S": Qt.Key.Key_Shift,
+    "s": Qt.Key.Key_Super_L
 }
 
 class Buffer(QGraphicsScene):
@@ -519,8 +469,17 @@ class Buffer(QGraphicsScene):
 
             text = QT_TEXT_DICT.get(last_key, last_key)
 
-            key_event = QKeyEvent(QEvent.Type.KeyPress, QT_KEY_DICT[last_key], modifier_flags, text)
+            pressrelease_keys = [QT_PRESSRELEASE_DICT.get(modifier) for modifier in event_list[0:-1]]
+            for pr in pressrelease_keys:
+                key_event = QKeyEvent(QEvent.Type.KeyPress, pr, Qt.KeyboardModifier.NoModifier)
+                post_event(widget, key_event)
+
+            key_event = QKeyEvent(QEvent.Type.KeyPress, QT_KEY_DICT[last_key], Qt.KeyboardModifier.NoModifier, text)
             post_event(widget, key_event)
+
+            for pr in pressrelease_keys:
+                key_event = QKeyEvent(QEvent.Type.KeyRelease, pr, Qt.KeyboardModifier.NoModifier)
+                post_event(widget, key_event)
 
     def get_url(self):
         ''' Get url.'''
